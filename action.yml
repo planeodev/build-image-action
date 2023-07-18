@@ -1,0 +1,31 @@
+name: build-image
+
+inputs:
+  ROLE_ARN: 
+    required: true
+  REGION:
+    required: true
+  LANG_TYPE:
+    required: true
+  LANG_VERSION:
+    required: true
+  SERVICE_NAME:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Print environment variables exposed by this action
+      uses: FranzDiebold/github-env-vars-action@v2
+    - name: Extract branch name
+      shell: bash
+      run: |
+        echo "BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+      id: extract_branch
+    - name: Send webhook request 
+      run: |
+        curl -X POST \
+          -H "Content-Type: application/json" \
+          -H "x-api-key: ${{ secrets.WEBHOOK_SECRET }}" \
+          -d '{ "service_name": "${{ inputs.SERVICE_NAME }}", "git_repo": "https://github.com/${{ github.repository }}", "git_branch": "${{ steps.extract_branch.outputs.BRANCH_NAME }}", "image_tag": "${{ env.CI_SHA_SHORT }}", "region": "${{ inputs.REGION }}", "role_arn": "${{ inputs.ROLE_ARN }}", "lang_type": "${{ inputs.LANG_TYPE }}", "lang_version": "${{ inputs.LANG_VERSION }}", "user_id": "${{ github.actor }}" }' \
+          ${{ secrets.WEBHOOK_URL }}
