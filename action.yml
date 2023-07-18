@@ -11,6 +11,10 @@ inputs:
     required: true
   SERVICE_NAME:
     required: true
+  WEBHOOK_SECRET:
+    required: true
+  WEBHOOK_URL:
+    required: true
 
 runs:
   using: "composite"
@@ -26,6 +30,6 @@ runs:
       run: |
         curl -X POST \
           -H "Content-Type: application/json" \
-          -H "x-api-key: ${{ secrets.WEBHOOK_SECRET }}" \
+          -H "x-api-key: ${{ inputs.WEBHOOK_SECRET }}" \
           -d '{ "service_name": "${{ inputs.SERVICE_NAME }}", "git_repo": "https://github.com/${{ github.repository }}", "git_branch": "${{ steps.extract_branch.outputs.BRANCH_NAME }}", "image_tag": "${{ env.CI_SHA_SHORT }}", "region": "${{ inputs.REGION }}", "role_arn": "${{ inputs.ROLE_ARN }}", "lang_type": "${{ inputs.LANG_TYPE }}", "lang_version": "${{ inputs.LANG_VERSION }}", "user_id": "${{ github.actor }}" }' \
-          ${{ secrets.WEBHOOK_URL }}
+          ${{ inputs.WEBHOOK_URL }}
