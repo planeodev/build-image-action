@@ -1,19 +1,27 @@
 name: build-image
+description: Build image action
 
 inputs:
   ROLE_ARN: 
+    description: The planeo role arn
     required: true
   REGION:
+    description: The region to publish resources in
     required: true
   LANG_TYPE:
+    description: Application language type
     required: true
   LANG_VERSION:
+    description: Application language version
     required: true
   SERVICE_NAME:
+    description: The service name
     required: true
   WEBHOOK_SECRET:
+    description: The webhook secret
     required: true
   WEBHOOK_URL:
+    description: The webhook url
     required: true
 
 runs:
@@ -27,6 +35,7 @@ runs:
         echo "BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
       id: extract_branch
     - name: Send webhook request 
+      shell: bash
       run: |
         curl -X POST \
           -H "Content-Type: application/json" \
