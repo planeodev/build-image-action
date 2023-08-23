@@ -17,6 +17,9 @@ inputs:
   SERVICE_NAME:
     description: The service name
     required: true
+  RUN_COMMAND:
+    description: The run command
+    required: true
   WEBHOOK_SECRET:
     description: The webhook secret
     required: true
@@ -40,5 +43,5 @@ runs:
         curl -X POST \
           -H "Content-Type: application/json" \
           -H "x-api-key: ${{ inputs.WEBHOOK_SECRET }}" \
-          -d '{ "service_name": "${{ inputs.SERVICE_NAME }}", "git_repo": "https://github.com/${{ github.repository }}", "git_branch": "${{ steps.extract_branch.outputs.BRANCH_NAME }}", "image_tag": "${{ env.CI_SHA_SHORT }}", "region": "${{ inputs.REGION }}", "role_arn": "${{ inputs.ROLE_ARN }}", "lang_type": "${{ inputs.LANG_TYPE }}", "lang_version": "${{ inputs.LANG_VERSION }}", "user_id": "${{ github.actor }}" }' \
+          -d '{ "service_name": "${{ inputs.SERVICE_NAME }}", "git_repo": "https://github.com/${{ github.repository }}", "git_branch": "${{ steps.extract_branch.outputs.BRANCH_NAME }}", "image_tag": "${{ env.CI_SHA_SHORT }}", "region": "${{ inputs.REGION }}", "role_arn": "${{ inputs.ROLE_ARN }}", "lang_type": "${{ inputs.LANG_TYPE }}", "lang_version": "${{ inputs.LANG_VERSION }}", "run_command": "${{ inputs.RUN_COMMAND }}", "user_id": "${{ github.actor }}" }' \
           ${{ inputs.WEBHOOK_URL }}
